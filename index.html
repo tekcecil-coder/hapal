@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAPAL — Logistics & Supply Solutions | Kumba, S.W. Region</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --white: #ffffff;
+    --orange: #f26f1a;
+    --orange-light: #ff8f3c;
+    --rust: #c94f00;
+    --deep: #130a00;
+    --mid: #1e1108;
+    --muted: #7a6a58;
+    --border: rgba(242,111,26,0.25);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; width: 12px; height: 12px; background: var(--orange); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s; mix-blend-mode: difference; }
+  .cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid var(--orange); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s, opacity 0.3s; opacity: 0.6; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; border-bottom: 1px solid transparent; transition: border-color 0.4s, background 0.4s; }
+  nav.scrolled { border-color: var(--border); background: rgba(10,10,10,0.88); backdrop-filter: blur(20px); }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.15em; color: var(--orange); text-decoration: none; }
+  .nav-logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--orange); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--orange); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--black); background: var(--orange); padding: 0.65rem 1.4rem; text-decoration: none; transition: background 0.3s; }
+  .nav-cta:hover { background: var(--orange-light); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+  .hero-bg-img { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1600&auto=format&fit=crop') center/cover no-repeat; filter: brightness(0.18); }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,13,13,0.97) 40%, rgba(13,13,13,0.5) 100%); }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(242,111,26,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(242,111,26,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 8rem 4rem 4rem; position: relative; z-index: 2; }
+  .hero-tag { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--orange); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+  .hero-tag::before { content: ''; width: 40px; height: 1px; background: var(--orange); }
+  .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 10vw, 10rem); line-height: 0.92; letter-spacing: 0.03em; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+  .hero-title .line-orange { color: var(--orange); display: block; }
+  .hero-title .line-outline { display: block; -webkit-text-stroke: 1px rgba(255,255,255,0.25); color: transparent; }
+  .hero-sub { margin-top: 2rem; font-size: 1.05rem; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.6); max-width: 420px; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+  .hero-actions { display: flex; gap: 1.2rem; margin-top: 2.5rem; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+  .btn-primary { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--black); background: var(--orange); padding: 1rem 2rem; text-decoration: none; display: inline-block; transition: all 0.3s; cursor: none; }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); }
+  .btn-secondary { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); background: transparent; padding: 1rem 2rem; text-decoration: none; display: inline-block; border: 1px solid var(--border); transition: all 0.3s; cursor: none; }
+  .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+  .hero-right { display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; padding: 8rem 3rem 4rem 1rem; }
+  .hero-photo-stack { position: relative; width: 100%; max-width: 420px; opacity: 0; animation: fadeIn 1.2s 0.5s forwards; }
+  .hero-photo-main { width: 100%; aspect-ratio: 3/4; object-fit: cover; border: 2px solid var(--border); display: block; }
+  .hero-photo-thumb { position: absolute; bottom: -2rem; left: -2rem; width: 150px; height: 110px; object-fit: cover; border: 2px solid var(--orange); display: block; }
+  .hero-stat-badge { position: absolute; top: 2rem; right: -1.5rem; background: var(--orange); padding: 1.4rem 1.2rem; text-align: center; }
+  .hero-stat-badge .num { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: var(--black); line-height: 1; }
+  .hero-stat-badge .lbl { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--deep); margin-top: 0.2rem; }
+  .hero-scroll { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; z-index: 2; opacity: 0; animation: fadeIn 1s 1.2s forwards; }
+  .hero-scroll span { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+  .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--orange), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+  /* MARQUEE */
+  .marquee-section { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.2rem 0; overflow: hidden; background: var(--mid); }
+  .marquee-track { display: flex; gap: 4rem; animation: marquee 25s linear infinite; width: max-content; }
+  .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.2em; color: var(--muted); white-space: nowrap; display: flex; align-items: center; gap: 1.5rem; }
+  .marquee-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--orange); }
+
+  /* SECTION COMMON */
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--orange); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem; }
+  .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--orange); }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 0.95; letter-spacing: 0.02em; }
+  .section-desc { max-width: 340px; font-size: 0.9rem; line-height: 1.7; color: var(--muted); font-weight: 300; }
+  .section-header { display: grid; grid-template-columns: 1fr auto; align-items: end; margin-bottom: 5rem; gap: 2rem; }
+
+  /* SERVICES */
+  .services { padding: 8rem 4rem; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .service-card { background: var(--mid); border: 1px solid var(--border); overflow: hidden; position: relative; transition: border-color 0.4s, transform 0.4s; }
+  .service-card:hover { border-color: var(--orange); transform: translateY(-5px); }
+  .service-photo-wrap { overflow: hidden; position: relative; }
+  .service-photo { width: 100%; height: 210px; object-fit: cover; display: block; transition: transform 0.5s, filter 0.4s; filter: brightness(0.82); }
+  .service-card:hover .service-photo { transform: scale(1.06); filter: brightness(1); }
+  .service-photo-wrap::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: linear-gradient(to bottom, transparent, var(--mid)); }
+  .service-num-badge { position: absolute; top: 1rem; left: 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.15em; color: var(--black); background: var(--orange); padding: 0.2rem 0.6rem; z-index: 2; }
+  .service-body { padding: 1.8rem 2rem 2.2rem; }
+  .service-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 0.8rem; color: var(--white); }
+  .service-desc { font-size: 0.85rem; line-height: 1.7; color: var(--muted); font-weight: 300; }
+  .service-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.2rem; font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange); opacity: 0; transition: opacity 0.3s; }
+  .service-card:hover .service-link { opacity: 1; }
+
+  /* GALLERY STRIP */
+  .gallery-strip { display: grid; grid-template-columns: repeat(4, 1fr); height: 280px; overflow: hidden; }
+  .gallery-item { overflow: hidden; position: relative; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s, filter 0.4s; filter: brightness(0.65) saturate(0.8); display: block; }
+  .gallery-item:hover img { transform: scale(1.08); filter: brightness(0.9) saturate(1); }
+  .gallery-item-label { position: absolute; bottom: 1rem; left: 1rem; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); background: rgba(242,111,26,0.85); padding: 0.3rem 0.7rem; }
+
+  /* ABOUT */
+  .about { padding: 8rem 4rem; background: var(--deep); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-visual { position: relative; }
+  .about-main-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; border: 1px solid var(--border); }
+  .about-float { position: absolute; bottom: -2rem; right: -2rem; background: var(--orange); padding: 2rem; width: 200px; }
+  .about-float-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--black); line-height: 1; }
+  .about-float-label { font-size: 0.75rem; color: var(--deep); font-weight: 500; margin-top: 0.3rem; }
+  .about-body { margin-top: 2rem; }
+  .about-text { font-size: 1rem; line-height: 1.85; color: var(--muted); font-weight: 300; margin-bottom: 1.5rem; }
+  .about-text strong { color: var(--white); font-weight: 400; }
+  .about-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+  .pillar { border: 1px solid var(--border); overflow: hidden; transition: border-color 0.3s; }
+  .pillar:hover { border-color: var(--orange); }
+  .pillar-img { width: 100%; height: 80px; object-fit: cover; display: block; filter: brightness(0.7) saturate(0.7); transition: filter 0.4s; }
+  .pillar:hover .pillar-img { filter: brightness(0.9) saturate(1); }
+  .pillar-body { padding: 1rem; }
+  .pillar-title { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.5rem; }
+  .pillar-text { font-size: 0.82rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* PRODUCTS */
+  .products { padding: 8rem 4rem; }
+  .products-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: auto auto; gap: 1.5rem; margin-top: 5rem; }
+  .product-card { border: 1px solid var(--border); overflow: hidden; position: relative; transition: border-color 0.4s; display: flex; flex-direction: column; }
+  .product-card:hover { border-color: var(--orange); }
+  .product-card.featured { grid-row: span 2; background: var(--mid); }
+  .product-card.featured::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(to right, var(--orange), var(--rust)); z-index: 1; }
+  .product-photo { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.5s, filter 0.4s; filter: brightness(0.82); }
+  .product-card.featured .product-photo { height: 260px; }
+  .product-card:hover .product-photo { transform: scale(1.04); filter: brightness(1); }
+  .product-body { padding: 1.8rem 2rem; flex: 1; display: flex; flex-direction: column; }
+  .product-tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; padding: 0.3rem 0.7rem; border: 1px solid var(--border); display: inline-block; }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 0.8rem; line-height: 1.1; }
+  .product-card.featured .product-name { font-size: 2.4rem; }
+  .product-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; font-weight: 300; flex: 1; }
+  .product-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+  .product-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .product-cta { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); background: var(--orange); padding: 0.6rem 1.2rem; text-decoration: none; transition: background 0.3s; cursor: none; }
+  .product-cta:hover { background: var(--orange-light); }
+
+  /* CONTACT */
+  .contact { padding: 8rem 4rem; background: var(--deep); position: relative; overflow: hidden; }
+  .contact::before { content: 'HAPAL'; position: absolute; right: -2rem; bottom: -3rem; font-family: 'Bebas Neue', sans-serif; font-size: 18rem; color: rgba(242,111,26,0.03); letter-spacing: 0.1em; pointer-events: none; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; position: relative; z-index: 1; }
+  .contact-lead { font-size: 1.15rem; line-height: 1.8; color: var(--muted); font-weight: 300; margin: 2rem 0 3rem; max-width: 400px; }
+  .contact-items { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-item { display: flex; align-items: flex-start; gap: 1.2rem; padding: 1.5rem; border: 1px solid var(--border); transition: border-color 0.3s; }
+  .contact-item:hover { border-color: var(--orange); }
+  .contact-item-icon { width: 52px; height: 52px; object-fit: cover; border-radius: 4px; flex-shrink: 0; filter: brightness(0.8); }
+  .contact-item-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.4rem; }
+  .contact-item-text { font-size: 0.9rem; color: var(--white); line-height: 1.5; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--mid); border: 1px solid var(--border); color: var(--white); padding: 0.9rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 300; outline: none; transition: border-color 0.3s; appearance: none; cursor: none; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--orange); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-select option { background: var(--deep); }
+  .form-submit { width: 100%; font-family: 'Space Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); background: var(--orange); border: none; padding: 1.1rem; cursor: none; transition: background 0.3s, transform 0.3s; margin-top: 0.5rem; }
+  .field-error { display: block; font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #e05c3a; margin-top: 0.4rem; min-height: 0.9rem; letter-spacing: 0.05em; }
+  .form-status { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; padding: 1rem 1.2rem; margin-bottom: 0.8rem; display: none; border-left: 3px solid; }
+  .form-status.success { display: block; border-color: #2d7a3a; background: rgba(45,122,58,0.1); color: #5ec97a; }
+  .form-status.error { display: block; border-color: #e05c3a; background: rgba(224,92,58,0.1); color: #e05c3a; }
+  .form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 3rem 4rem; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--orange); letter-spacing: 0.15em; }
+  .footer-links { display: flex; justify-content: center; gap: 2rem; list-style: none; }
+  .footer-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--orange); }
+  .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes scrollPulse { 0%,100% { opacity:1; transform:scaleY(1); } 50% { opacity:0.4; transform:scaleY(0.5); } }
+
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 7rem 2rem 4rem; }
+    .services, .products, .contact { padding: 5rem 2rem; }
+    .about { padding: 5rem 2rem; grid-template-columns: 1fr; gap: 3rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .products-grid { grid-template-columns: 1fr; }
+    .product-card.featured { grid-row: auto; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .section-header { grid-template-columns: 1fr; }
+    .gallery-strip { grid-template-columns: 1fr 1fr; height: auto; }
+    .gallery-item { height: 160px; }
+    footer { grid-template-columns: 1fr; text-align: center; }
+    .footer-copy { text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .about-float { right: 0; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">HAP<span>AL</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get a Quote</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-left">
+    <div class="hero-tag">Kumba, S.W. Region · Est. HAPAL</div>
+    <h1 class="hero-title">
+      <span class="line-orange">Moving</span>
+      <span>Forward,</span>
+      <span class="line-outline">Together.</span>
+    </h1>
+    <p class="hero-sub">Your all-in-one logistics partner in the South West Region. From fleet services to wholesale supply chains — HAPAL delivers.</p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">Explore Services</a>
+      <a href="#contact" class="btn-secondary">Contact Us</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-stack">
+      <img class="hero-photo-main" src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&auto=format&fit=crop" alt="Logistics warehouse operations">
+      <img class="hero-photo-thumb" src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&auto=format&fit=crop" alt="Fleet of vehicles">
+      <div class="hero-stat-badge">
+        <div class="num">24/7</div>
+        <div class="lbl">Service<br>Available</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="dot"></span> Car Rental</div>
+    <div class="marquee-item"><span class="dot"></span> Driver Hire</div>
+    <div class="marquee-item"><span class="dot"></span> Liquid Soap Supply</div>
+    <div class="marquee-item"><span class="dot"></span> Bleach Wholesale</div>
+    <div class="marquee-item"><span class="dot"></span> Hair Shampoo</div>
+    <div class="marquee-item"><span class="dot"></span> Cleaning Chemicals</div>
+    <div class="marquee-item"><span class="dot"></span> Laundry Detergents</div>
+    <div class="marquee-item"><span class="dot"></span> Kumba, S.W. Region</div>
+    <div class="marquee-item"><span class="dot"></span> Car Rental</div>
+    <div class="marquee-item"><span class="dot"></span> Driver Hire</div>
+    <div class="marquee-item"><span class="dot"></span> Liquid Soap Supply</div>
+    <div class="marquee-item"><span class="dot"></span> Bleach Wholesale</div>
+    <div class="marquee-item"><span class="dot"></span> Hair Shampoo</div>
+    <div class="marquee-item"><span class="dot"></span> Cleaning Chemicals</div>
+    <div class="marquee-item"><span class="dot"></span> Laundry Detergents</div>
+    <div class="marquee-item"><span class="dot"></span> Kumba, S.W. Region</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">What We Do</div>
+      <h2 class="section-title">Our<br>Services</h2>
+    </div>
+    <p class="section-desc">HAPAL provides a comprehensive suite of logistics and supply services tailored to meet businesses and individuals across the S.W. Region.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">01</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600&auto=format&fit=crop" alt="Car Rental fleet">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Car Rental</div>
+        <p class="service-desc">A well-maintained fleet of vehicles for daily, weekly, or monthly hire. Serving corporate clients, events, and personal travel across Kumba and beyond.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">02</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=600&auto=format&fit=crop" alt="African professional driver">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Driver Hire</div>
+        <p class="service-desc">Experienced, vetted professional drivers available for hire. Safe and reliable transportation for executives, delegations, and special occasions.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">03</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&auto=format&fit=crop" alt="Chemical supply laboratory">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Chemical Supply</div>
+        <p class="service-desc">Wholesale supply of soap-producing chemicals and raw materials for manufacturers, factories, and small-scale soap producers.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">04</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1584305574647-0cc949a2bb9f?w=600&auto=format&fit=crop" alt="Liquid soap wholesale">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Liquid Soap Wholesale</div>
+        <p class="service-desc">Bulk supply of premium liquid soap for retailers, hotels, hospitals, schools, and households. Competitive pricing on large orders.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">05</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=600&auto=format&fit=crop" alt="Bleach and detergents">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Bleach &amp; Detergents</div>
+        <p class="service-desc">Distribution of industrial-grade bleach and laundry detergents. From cleaning institutions to retail stores, we keep your supply chain stocked.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-photo-wrap">
+        <span class="service-num-badge">06</span>
+        <img class="service-photo" src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=600&auto=format&fit=crop" alt="Hair shampoo products">
+      </div>
+      <div class="service-body">
+        <div class="service-name">Hair Shampoo Supply</div>
+        <p class="service-desc">Wholesale distribution of hair shampoo to salons, beauty shops, pharmacies, and supermarkets across the South West Region.</p>
+        <div class="service-link">Learn More →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGISTICS GALLERY STRIP -->
+<div class="gallery-strip reveal">
+  <div class="gallery-item">
+    <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&auto=format&fit=crop" alt="Logistics trucks">
+    <span class="gallery-item-label">Fleet Operations</span>
+  </div>
+  <div class="gallery-item">
+    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=600&auto=format&fit=crop" alt="Global supply chain network">
+    <span class="gallery-item-label">Supply Chain</span>
+  </div>
+  <div class="gallery-item">
+    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&auto=format&fit=crop" alt="Warehouse storage">
+    <span class="gallery-item-label">Wholesale Storage</span>
+  </div>
+  <div class="gallery-item">
+    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&auto=format&fit=crop" alt="Product delivery">
+    <span class="gallery-item-label">Last-Mile Delivery</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-visual reveal">
+    <img class="about-main-img" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop" alt="HAPAL business team">
+    <div class="about-float">
+      <div class="about-float-num">S.W.</div>
+      <div class="about-float-label">Kumba, South West<br>Region, Cameroon</div>
+    </div>
+  </div>
+  <div class="about-content reveal">
+    <div class="section-tag">Who We Are</div>
+    <h2 class="section-title">Built on<br>Trust &amp;<br>Reliability</h2>
+    <div class="about-body">
+      <p class="about-text"><strong>HAPAL</strong> is a diversified logistics and supply company proudly based in <strong>Kumba, South West Region</strong>. We were founded with one goal: to bridge the gap between quality products and the people who need them most.</p>
+      <p class="about-text">From our fleet of rental vehicles and professional driver services to our extensive wholesale network of cleaning and hygiene products, HAPAL is a name synonymous with <strong>dependability, value, and regional expertise</strong>.</p>
+    </div>
+    <div class="about-pillars">
+      <div class="pillar">
+        <img class="pillar-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&auto=format&fit=crop" alt="Our Mission">
+        <div class="pillar-body">
+          <div class="pillar-title">Our Mission</div>
+          <p class="pillar-text">To provide reliable, affordable logistics and product supply to every business and household in the region.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <img class="pillar-img" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&auto=format&fit=crop" alt="Our Reach">
+        <div class="pillar-body">
+          <div class="pillar-title">Our Reach</div>
+          <p class="pillar-text">Operating from Kumba with supply chains extending across the South West and beyond.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <img class="pillar-img" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&auto=format&fit=crop" alt="Quality First">
+        <div class="pillar-body">
+          <div class="pillar-title">Quality First</div>
+          <p class="pillar-text">All products and services meet strict quality standards. We never compromise on what reaches our clients.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <img class="pillar-img" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&auto=format&fit=crop" alt="Partnership">
+        <div class="pillar-body">
+          <div class="pillar-title">Partnership</div>
+          <p class="pillar-text">We build long-term relationships. Your growth is our growth — we invest in your success.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">What We Supply</div>
+      <h2 class="section-title">Product<br>Lines</h2>
+    </div>
+    <p class="section-desc">High-quality products for wholesale and bulk purchase. Ideal for retailers, institutions, and resellers.</p>
+  </div>
+  <div class="products-grid">
+    <div class="product-card featured reveal">
+      <img class="product-photo" src="https://images.unsplash.com/photo-1584305574647-0cc949a2bb9f?w=800&auto=format&fit=crop" alt="Liquid Soap Wholesale">
+      <div class="product-body">
+        <div class="product-tag">Bestseller</div>
+        <h3 class="product-name">Liquid Soap &amp; Hygiene Products</h3>
+        <p class="product-desc">Our flagship wholesale offering. Premium liquid soap, hand wash, and hygiene products supplied in bulk quantities at unbeatable regional prices. Trusted by hotels, hospitals, schools, and retailers throughout Kumba and the S.W. Region.</p>
+        <div class="product-bottom">
+          <span class="product-label">Wholesale Available</span>
+          <a href="#contact" class="product-cta">Order Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img class="product-photo" src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&auto=format&fit=crop" alt="Bleach and Disinfectants">
+      <div class="product-body">
+        <div class="product-tag">Wholesale</div>
+        <h3 class="product-name">Bleach &amp; Disinfectants</h3>
+        <p class="product-desc">Industrial and household bleach in bulk. Trusted for sanitation across institutions and retailers.</p>
+        <div class="product-bottom">
+          <span class="product-label">Bulk Orders</span>
+          <a href="#contact" class="product-cta">Enquire</a>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img class="product-photo" src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=500&auto=format&fit=crop" alt="Hair Shampoo Range">
+      <div class="product-body">
+        <div class="product-tag">Supply</div>
+        <h3 class="product-name">Hair Shampoo Range</h3>
+        <p class="product-desc">Quality shampoo for salons, pharmacies, and beauty supply stores.</p>
+        <div class="product-bottom">
+          <span class="product-label">Wholesale</span>
+          <a href="#contact" class="product-cta">Enquire</a>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img class="product-photo" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500&auto=format&fit=crop" alt="Soap Chemicals">
+      <div class="product-body">
+        <div class="product-tag">Raw Materials</div>
+        <h3 class="product-name">Soap Chemicals</h3>
+        <p class="product-desc">Raw inputs for soap production: caustic soda, fragrance oils, and surfactants.</p>
+        <div class="product-bottom">
+          <span class="product-label">For Manufacturers</span>
+          <a href="#contact" class="product-cta">Enquire</a>
+        </div>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img class="product-photo" src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=500&auto=format&fit=crop" alt="Laundry Detergents">
+      <div class="product-body">
+        <div class="product-tag">Cleaning</div>
+        <h3 class="product-name">Laundry Detergents</h3>
+        <p class="product-desc">Powder and liquid detergents for households, laundromats, and hospitality businesses.</p>
+        <div class="product-bottom">
+          <span class="product-label">All Quantities</span>
+          <a href="#contact" class="product-cta">Enquire</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <div class="section-tag">Get In Touch</div>
+      <h2 class="section-title">Let's Work<br>Together</h2>
+      <p class="contact-lead">Ready to move with HAPAL? Whether you need transport solutions or bulk product supply, our team in Kumba is ready.</p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <img class="contact-item-icon" src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=100&auto=format&fit=crop" alt="Location">
+          <div>
+            <div class="contact-item-label">Location</div>
+            <div class="contact-item-text">Kumba, South West Region<br>Republic of Cameroon</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <img class="contact-item-icon" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop" alt="Business Hours">
+          <div>
+            <div class="contact-item-label">Business Hours</div>
+            <div class="contact-item-text">Monday – Saturday: 7:00am – 7:00pm<br>Sunday: By Appointment</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <img class="contact-item-icon" src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=100&auto=format&fit=crop" alt="Orders">
+          <div>
+            <div class="contact-item-label">Order Type</div>
+            <div class="contact-item-text">Wholesale, Retail &amp; Custom Orders<br>Fleet Bookings &amp; Driver Hire</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal reveal-delay-2">
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input type="text" id="from_name" class="form-input" placeholder="Your full name" required>
+        <span class="field-error" id="err-name"></span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" id="from_email" class="form-input" placeholder="your@email.com" required>
+        <span class="field-error" id="err-email"></span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone / WhatsApp</label>
+        <input type="tel" id="phone" class="form-input" placeholder="+237 000 000 000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Service Interest *</label>
+        <select id="service" class="form-select" required>
+          <option value="" disabled selected>Select a service...</option>
+          <option>Car Rental</option>
+          <option>Driver Hire</option>
+          <option>Liquid Soap Wholesale</option>
+          <option>Bleach &amp; Detergents</option>
+          <option>Hair Shampoo Supply</option>
+          <option>Soap Chemicals</option>
+          <option>Multiple Services</option>
+        </select>
+        <span class="field-error" id="err-service"></span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Message *</label>
+        <textarea id="message" class="form-textarea" placeholder="Tell us about your needs, quantities, or questions..." required></textarea>
+        <span class="field-error" id="err-message"></span>
+      </div>
+      <div class="form-status" id="form-status"></div>
+      <button class="form-submit" id="submit-btn" onclick="handleSubmit()">Send Enquiry &#8594;</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">HAPAL</div>
+  <ul class="footer-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">&#169; 2024 HAPAL Logistics &amp; Supply<br>Kumba, S.W. Region</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ─── EmailJS Configuration ───────────────────────────────────────────────
+  // STEP 1: Sign up free at https://emailjs.com
+  // STEP 2: Add Gmail service (tekcecil@gmail.com) → copy Service ID below
+  // STEP 3: Create an Email Template → copy Template ID below
+  // STEP 4: Copy your Public Key from Account → API Keys
+  const EJS_PUBLIC_KEY  = 'HVEqP5g1GVOBCb3Ii';
+  const EJS_SERVICE_ID  = 'service_vcviei3';
+  const EJS_TEMPLATE_ID = 'template_cfv85g5';
+  // ─────────────────────────────────────────────────────────────────────────
+
+  emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mouseX=0, mouseY=0, ringX=0, ringY=0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX+'px'; cursor.style.top = mouseY+'px';
+  });
+  (function animateRing(){
+    ringX += (mouseX-ringX)*0.12; ringY += (mouseY-ringY)*0.12;
+    ring.style.left = ringX+'px'; ring.style.top = ringY+'px';
+    requestAnimationFrame(animateRing);
+  })();
+  document.querySelectorAll('a,button,.service-card,.product-card,.pillar,.contact-item,.gallery-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='20px'; cursor.style.height='20px'; ring.style.width='60px'; ring.style.height='60px'; ring.style.opacity='1'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='12px'; cursor.style.height='12px'; ring.style.width='40px'; ring.style.height='40px'; ring.style.opacity='0.6'; });
+  });
+
+  // Sticky nav
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  }), { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // ─── Form Validation & EmailJS Submit ────────────────────────────────────
+  function clearErrors() {
+    ['err-name','err-email','err-service','err-message'].forEach(id => {
+      document.getElementById(id).textContent = '';
+    });
+    const status = document.getElementById('form-status');
+    status.className = 'form-status';
+    status.textContent = '';
+  }
+
+  function validate() {
+    let valid = true;
+    const name    = document.getElementById('from_name').value.trim();
+    const email   = document.getElementById('from_email').value.trim();
+    const service = document.getElementById('service').value;
+    const message = document.getElementById('message').value.trim();
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name) { document.getElementById('err-name').textContent = 'Full name is required.'; valid = false; }
+    if (!email) { document.getElementById('err-email').textContent = 'Email address is required.'; valid = false; }
+    else if (!emailRx.test(email)) { document.getElementById('err-email').textContent = 'Please enter a valid email.'; valid = false; }
+    if (!service) { document.getElementById('err-service').textContent = 'Please select a service.'; valid = false; }
+    if (!message) { document.getElementById('err-message').textContent = 'Message cannot be empty.'; valid = false; }
+    return valid;
+  }
+
+  function handleSubmit() {
+    clearErrors();
+    if (!validate()) return;
+
+    const btn = document.getElementById('submit-btn');
+    const status = document.getElementById('form-status');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    const templateParams = {
+      to_email:  'cecil@hapallogistics.com',
+      from_name:  document.getElementById('from_name').value.trim(),
+      from_email: document.getElementById('from_email').value.trim(),
+      phone:      document.getElementById('phone').value.trim() || 'Not provided',
+      service:    document.getElementById('service').value,
+      message:    document.getElementById('message').value.trim(),
+    };
+
+    emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, templateParams)
+      .then(() => {
+        status.className = 'form-status success';
+        status.textContent = '✓ Message sent! We will get back to you shortly.';
+        btn.textContent = 'Send Enquiry →';
+        btn.disabled = false;
+        // Clear fields
+        ['from_name','from_email','phone','message'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('service').selectedIndex = 0;
+      })
+      .catch(err => {
+        console.error('EmailJS error:', err);
+        status.className = 'form-status error';
+        status.textContent = '✗ Failed to send. Please try again or email cecil@hapallogistics.com directly.';
+        btn.textContent = 'Send Enquiry →';
+        btn.disabled = false;
+      });
+  }
+</script>
+</body>
+</html>
